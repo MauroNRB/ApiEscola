@@ -25,7 +25,7 @@ CREATE TABLE usuarios
 );
 CREATE TABLE provas
 (
-	id INTEGER NOT NULL AUTO_INCREMENT,
+	id INTEGER NOT NULL,
 	id_professor INTEGER NOT NULL,
 	
 	PRIMARY KEY (id), 
@@ -33,10 +33,11 @@ CREATE TABLE provas
 );
 CREATE TABLE provas_perguntas
 (
-	id INTEGER NOT NULL AUTO_INCREMENT,
+	id INTEGER NOT NULL,
 	id_prova INTEGER NOT NULL,
 	pergunta VARCHAR(75) NOT NULL,
 	peso_pergunta INTEGER NOT NULL,
+	resposta_correta INTEGER NOT NULL,
 	
 	PRIMARY KEY (id),
 	FOREIGN KEY (id_prova) REFERENCES provas (id)
@@ -46,8 +47,8 @@ CREATE TABLE provas_respostas
 (
 	id INTEGER NOT NULL AUTO_INCREMENT,
 	id_gabarito INTEGER NOT NULL,
+	numero_reposta INTEGER NOT NULL,
 	resposta VARCHAR(75) NOT NULL,
-	resposta_correta TINYINT(1),
 	
 	PRIMARY KEY (id),
 	FOREIGN KEY (id_gabarito) REFERENCES provas_perguntas (id)
@@ -102,3 +103,37 @@ Exemplo de JSON para Professor:
     "professor": true
 }
 
+# Cadastrado Prova:
+ - Use o programa Postman.
+ - Coloque na URL http://localhost:5000/add-prova no modo POST.
+ - Use o Body, no modo RAW com o tipo JSON.
+
+Exemplo de JSON para prova:
+{
+    "id-prova": "1",
+    "email": "paulo@professor.com",
+    "perguntas": {
+        "1": {
+            "pergunta": "Qual é a raiz de quadrada de 4?",
+            "respostas": {
+                "1": "2",
+                "2": "1",
+                "3": "0.5",
+                "4": "4"
+            },
+            "resposta-correta": "1",
+            "peso-pergunta": "5"
+        },
+        "2": {
+            "pergunta": "Quanto é 3x3?",
+            "respostas": {
+                "1": "6",
+                "2": "3",
+                "3": "9",
+                "4": "12"
+            },
+            "resposta-correta": "3",
+            "peso-pergunta": "5"
+        }
+    }
+}
