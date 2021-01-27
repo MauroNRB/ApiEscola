@@ -26,10 +26,7 @@ CREATE TABLE usuarios
 CREATE TABLE provas
 (
 	id INTEGER NOT NULL,
-	id_professor INTEGER NOT NULL,
-	
-	PRIMARY KEY (id), 
-	FOREIGN KEY (id_professor) REFERENCES usuarios (id)
+	id_professor INTEGER NOT NULL
 );
 CREATE TABLE provas_perguntas
 (
@@ -37,21 +34,17 @@ CREATE TABLE provas_perguntas
 	id_prova INTEGER NOT NULL,
 	pergunta VARCHAR(75) NOT NULL,
 	peso_pergunta INTEGER NOT NULL,
-	resposta_correta INTEGER NOT NULL,
-	
-	PRIMARY KEY (id),
-	FOREIGN KEY (id_prova) REFERENCES provas (id)
+	resposta_correta INTEGER NOT NULL
 );
 
 CREATE TABLE provas_respostas
 (
 	id INTEGER NOT NULL AUTO_INCREMENT,
-	id_gabarito INTEGER NOT NULL,
+	id_pergunta INTEGER NOT NULL,
 	numero_reposta INTEGER NOT NULL,
 	resposta VARCHAR(75) NOT NULL,
 	
-	PRIMARY KEY (id),
-	FOREIGN KEY (id_gabarito) REFERENCES provas_perguntas (id)
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE provas_respostas_alunos
@@ -60,11 +53,9 @@ CREATE TABLE provas_respostas_alunos
 	id_aluno INTEGER NOT NULL,
 	pergunta_prova INTEGER NOT NULL,
 	resposta_pergunta INTEGER NOT NULL, 
+   id_prova INTEGER NOT NULL,
 	
 	PRIMARY KEY (id), 
-	FOREIGN KEY (id_aluno) REFERENCES usuarios (id), 
-	FOREIGN KEY (pergunta_prova) REFERENCES provas_perguntas (id),
-	FOREIGN KEY (resposta_pergunta) REFERENCES provas_respostas (id)
 );
 CREATE TABLE notas_alunos
 (
@@ -74,8 +65,6 @@ CREATE TABLE notas_alunos
 	nota INTEGER NOT NULL, 
 	
 	PRIMARY KEY (id), 
-	FOREIGN KEY (id_aluno) REFERENCES usuarios (id), 
-	FOREIGN KEY (id_prova) REFERENCES provas (id)
 );
 
 # Iniciando o Projeto:
@@ -107,22 +96,23 @@ Exemplo de JSON para Professor:
  - Use o programa Postman.
  - Coloque na URL http://localhost:5000/add-prova no modo POST.
  - Use o Body, no modo RAW com o tipo JSON.
+ - Remova os comentarios
 
 Exemplo de JSON para prova:
 {
-    "id-prova": "1",
-    "email": "paulo@professor.com",
+    "prova": "1", // Id da prova
+    "email": "carlos@professor.com", // Email do professor
     "perguntas": {
-        "1": {
-            "pergunta": "Qual é a raiz de quadrada de 4?",
+        "1": { // A chave é o numero da questão da prova
+            "pergunta": "Qual é a raiz de quadrada de 4?", // Pergunta
             "respostas": {
-                "1": "2",
-                "2": "1",
-                "3": "0.5",
-                "4": "4"
+                "1": "2", // A chave é o numero da opção, e o valor é a resposta da opção
+                "2": "1", // A chave é o numero da opção, e o valor é a resposta da opção
+                "3": "0.5", // A chave é o numero da opção, e o valor é a resposta da opção
+                "4": "4" // A chave é o numero da opção, e o valor é a resposta da opção
             },
-            "resposta-correta": "1",
-            "peso-pergunta": "5"
+            "resposta-correta": "1", // Qual opção é a resposta certa, então a chave da respostas
+            "peso-pergunta": "5" // Peso da questão
         },
         "2": {
             "pergunta": "Quanto é 3x3?",
@@ -137,3 +127,27 @@ Exemplo de JSON para prova:
         }
     }
 }
+
+# Cadastrado as respostas da prova:
+ - Use o programa Postman.
+ - Coloque na URL http://localhost:5000/prova-aluno no modo POST.
+ - Use o Body, no modo RAW com o tipo JSON.
+ - Remova os comentarios
+
+Exemplo de JSON de respostas da prova:
+{
+    "email": "pedro@aluno.com", // Id do aluno
+    "prova": "1", // Id da prova
+    "respostas": {
+        "1": "2", // a chave é o numero da questão, o valor é a resposta da questão
+        "2": "3" // a chave é o numero da questão, o valor é a resposta da questão
+    }
+}
+
+# Pesquisado Alunos Aprovados e Reprovados:
+ - Use o programa Postman.
+ - Coloque na http://localhost:5000/alunos-aprovados no modo GET
+
+# Caso queira ver Usuario cadastrados
+ - Use o programa Postman.
+ - Coloque na http://localhost:5000/users no modo GET
